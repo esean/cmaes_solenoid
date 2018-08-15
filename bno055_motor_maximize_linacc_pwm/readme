@@ -1,0 +1,11 @@
+Build:
+
+	$ ./build.sh
+
+	#	find minimum:
+	$ ./bno055_motor_maximize_linacc_pwm 200 0.1 70 0
+
+	#	find maximum:
+	$ ./bno055_motor_maximize_linacc_pwm 200 0.1 70 1
+
+
