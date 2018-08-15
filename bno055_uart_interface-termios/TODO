@@ -1,0 +1,1 @@
+- too many 0xEE 0x07 on register reads, do one re-read if happens to try to fix??
