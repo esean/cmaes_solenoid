@@ -1,0 +1,168 @@
+
+    /==============\
+    |   INSTALL    |
+    \==============/
+
+=======================
+ new board BRINGUP
+=======================
+* OS: 2018-03-13-raspbian-stretch.img
+
+Steps to bring up brand-new PRi:
+
+    $ sudo raspi-config
+        # change password
+        # network->set hostname (no underscores)
+        # boot->console requiring login
+        # local->locale: unselect en_GB, set en_US.UTF-8
+        #     ->timezone:pacific-new
+        #     ->keyboard:english
+        #     ->wifi:us
+        # interface: enable ssh, I2C, spi, uart (don't want console on serial, just enable serial port)
+           (optionally) for temp_logger, you will also need 1wire configured
+        * For UART, make sure /boot/config.txt has,
+            enable_uart=1
+            dtoverlay=pi3-miniuart-bt
+        * edit /boot/cmdline.txt to make sure it doesn't have kernel UART open, remove any console0=115200...
+        * If you had *not* turned on the dtoverlay=pi3-miniuart-bt (commented out), you would access uart at /dev/ttyS0, but
+            instead here use /dev/ttyAMA0
+
+    # make sure date is correct for PST
+    # and if debugging and HDMI monitor is not happy with settings, you can set 'hdmi_safe=1' in /boot/config.txt
+
+    # configure wifi:
+        Probably easiest if you 'sudo raspi-config' and update credentials there.
+        With 'Stretch' RPi release, you want /etc/network/interfaces basically empty, any wifi networks you want to connect with
+        in /etc/wpa_supplicant/wpa_supplicant.conf, and any static IP addresses added to /etc/dhcpcd.conf
+        for example,
+        $ cat /etc/wpa_supplicant/wpa_supplicant.conf
+        network={
+            ssid="RouterName"
+            psk=" (your password) "
+        }
+
+        MORE NOTES: c/o /etc/network/interfaces, reference this doc (and you can check your OS release w/ 'cat /etc/os-release')
+        https://raspberrypi.stackexchange.com/questions/37920/how-do-i-set-up-networking-wifi-static-ip-address
+
+    # for passwordless login,
+        cat ~/.ssh/id_rsa.pub | ssh pi@10.8.100.42 'cat >> .ssh/authorized_keys'
+        -or-
+        ssh-copy-id ${user}@${hostname}
+
+    $ reboot and unplug ethernet cable
+    # now you can ssh,
+        $ ssh pi@[hostname].local
+
+        * For development: use sshfs to mount RPi filesystem locally, check out SVN onto target *
+        * Or just use SVN directly on RPi to keep up-to-date *
+
+    # you may want to plug back in ethernet cable here to speed up these downloads..
+    $ sudo apt-get purge libreoffice* wolfram-engine sonic-pi scratch -y
+    $ sudo apt-get clean
+    $ sudo apt-get autoremove -y
+    $ sudo apt-get update && time sudo apt-get dist-upgrade
+    (don't know why but had to apt-get update again here...)
+    $ sudo apt-get update
+    $ sudo apt-get install vim screen subversion -y
+
+    # for side-by-side svn diff using vim, in ~/.bashrc
+	export EDITOR=vim
+    # and in ~/.subversion/config, add
+	diff-cmd = /home/pi/bin/svndiff.sh
+    # then create the bin/ dir and in svndiff.sh (chmod +x after)
+	/usr/bin/vimdiff $7 $6
+
+    # for PWM ability, follow http://blog.oddbit.com/2017/09/26/some-notes-on-pwm-on-the-raspberry-pi/
+        *( better here, see mmap_io_access/: http://www.pieter-jan.com/node/15 )*
+
+	- at bottom of /boot/config.txt, add these two lines to comment out an existing line (so audio doesn't conflict with
+			pwm) and add the default pwm overlay GPIO=18
+		$ sudo vi /boot/config.txt
+		#dtparam=audio=on
+		dtoverlay=pwm-2chan,pin=18,func=2,pin2=19,func2=2
+
+        - to config/enable PWM at boot, add to /etc/rc.local,
+            PWM=/sys/class/pwm/pwmchip0
+            echo 0 > ${PWM}/export
+            #echo 1 > ${PWM}/export
+            chown -R root:gpio $PWM/*
+            chmod -R g+rwX $PWM/*
+
+
+
+=======================
+ TOOLS:
+=======================
+I'm using this version:
+    $ clang++ --version
+    clang version 3.8.1-24+rpi1 (tags/RELEASE_381/final)
+    Target: armv6--linux-gnueabihf
+    Thread model: posix
+    InstalledDir: /usr/bin
+But on PiZW, I just used standard g++ and was fine
+
+Follow wiki directions for building, (https://github.com/beniz/libcmaes/wiki)
+    but RPi uses cmake so doesn't need libtool, automake, autoconf
+
+    $ sudo apt-get install cmake libgoogle-glog-dev libgflags-dev libeigen3-dev -y
+
+
+=======================
+ TEST HW:
+=======================
+- PCB needs slight rework to enable UART mode on BNO055, jumper wire pullup
+- For testing the motor control GPIO, run tools in bin/
+
+Test UART connection to BNO055,
+    $ cd bno055_uart_interface-termios 
+    $ ./build.sh && ./bno055_test 8 44
+    $ cd ../ 
+
+- can also use python script to test(/get unstuck...)
+    $ ./bno055_uart_interface-python/rpi_uart/write_read.py
+
+
+
+=======================
+ INSTALL CMA-ES:
+=======================
+now compile CMA-ES algo,
+    $ git clone https://github.com/beniz/libcmaes.git
+    *( first turn on USB drive swap space )*
+        https://raspberrypi.stackexchange.com/questions/70/how-to-set-up-swap-space
+    $ cd libcmaes
+    $ git checkout master
+    $ mkdir build; cd build
+    $ cmake ..
+    $ make
+    ( ... 15min later...) (RPi3b+) (or 117min later on RPiZW)
+    $ sudo make install
+    $ sudo ldconfig
+
+# (optionally, on Mac and also works on RPi):
+    $ git checkout dev
+    $ ./autogen.sh
+    $ ./configure
+    $ make
+    ( ... 36min later...)
+    $ sudo make install
+    $ sudo ldconfig
+
+You should now be able to cd into examples/ and compile with this,
+
+    $ g++/clang++ sample-code-ask-tell.cc -lcmaes -I /usr/local/include/libcmaes/ -I /usr/include/eigen3/ -std=c++11
+    $ ./a.out 
+    best solution => f-value=5.4702e-15 / fevals=2860 / sigma=1.82543e-07 / iter=286 / elaps=0ms / x= 3.11857e-09 -2.06188e-08  -2.5348e-08 -1.31742e-08  2.79762e-08 -3.75231e-08 -4.64143e-09  2.68872e-08  1.82112e-08 -3.08625e-08
+
+
+
+=======================
+ COMPILE MAIN PROGRAM:
+=======================
+
+# reads bno055 while exercising motor for max linacc
+
+cd ../bno055_motor_maximize_linacc_pwm
+./build.sh
+./bno055_motor_maximize_linacc_pwm
+
