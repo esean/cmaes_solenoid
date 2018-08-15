@@ -53,3 +53,5 @@ bno055_uart_interface-termios
     - cpp: just read samples from BNO055
 
 
+![Alt text](doc/IMG_2684.JPG?raw=true "Schematic")
+
