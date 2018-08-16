@@ -47,7 +47,7 @@ shared
 
 
 
-#When things don't run, to debug:
+# When things don't run, to debug:
 
 bno055_uart_interface-python
     - py: just read samples from BNO055
