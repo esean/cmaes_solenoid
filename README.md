@@ -6,11 +6,13 @@ One night I noticed I had the battery and motor from an old 12V hand-held power 
 
 ## HW:
 * RPi ZW
-    UART to BNO055 (9DOF IMU)
+    UART to BNO055 (9DOF IMU),
     (1) IO to turn motor on/off, using PWM speed & duty cycle params
-* 12v motor, using 12v drill clippable battery pack
+* 12v motor, using 12v drill clippable battery pack,
     or any 12v solenoid can be used
 
+NOTE: The BNO055 supports I2C and UART interfaces. I2C would be preferable but the RPi has a bug with I2C clock stretching, which this BNO055 uses. So I had to wire to talk over UART at 115200 which is plenty fast enough to get samples off at it's 100Hz max update rate.
+    
 ## CMA-ES:
 * ML algorithm that allows finding a minimum in set of
     function/data. Here the fcn/data is from BNO055. The
