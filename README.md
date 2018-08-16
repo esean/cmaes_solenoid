@@ -19,8 +19,8 @@ One night I noticed I had the battery and motor from an old 12V hand-held power 
     then tries to maximize the force found by adjusting
     those on/off times
 
-### https://www.lri.fr/~hansen/cmaes_inmatlab.html#practical
-### https://github.com/beniz/libcmaes/wiki/
+
+### The CMA-ES source came from https://github.com/beniz/libcmaes/wiki/
 
 
 
