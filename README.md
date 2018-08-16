@@ -1,4 +1,4 @@
-# Simple project to learn about CMA-ES algorithm
+# Using CMA-ES algorithm for RPiZW motor control
 
 Some projects get started for the simple reason you have the parts around, and an idea comes to mind.
 
@@ -20,7 +20,7 @@ One night I noticed I had the battery and motor from an old 12V hand-held power 
     those on/off times
 
 
-### The CMA-ES source came from https://github.com/beniz/libcmaes/wiki/
+### The CMA-ES source came from https://github.com/beniz/libcmaes
 
 
 
