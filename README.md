@@ -75,4 +75,7 @@ bno055_uart_interface-termios
 
 I would like to add a 2nd optimization objective, so the program could for example maximize the linear acceleration while at the same time minimizing the angular rotation. Or you could maximize the angular rotation while minimizing the linear acceleration.
 
-This is called a multi-objective CMA-ES (MO-CMA-ES) which finds a pareto front of solutions that exist between the 2+ objectives. The same CMA-ES authors [extended their algorithm to include MO support](https://christian-igel.github.io/downloads.html#MOCMA), but it is not available in the above libcmaes codebase. It is however available in the Shark-ML library.
+This is called a multi-objective CMA-ES (MO-CMA-ES) which finds a pareto front of solutions that exist between the 2+ objectives. The same CMA-ES authors [extended their algorithm to include MO support](https://christian-igel.github.io/downloads.html#MOCMA), but it is not available in the libcmaes codebase used in this project. It is however available in the Shark-ML library.
+
+Another great [read about MO-CMA-ES is here](https://christian-igel.github.io/paper/M-oOwUSS-submission.pdf)
+
