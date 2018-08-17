@@ -59,3 +59,11 @@ bno055_uart_interface-termios
 
 
 
+
+# Prototype
+
+![alt text](doc/proto1.png)
+
+![alt text](doc/proto2.png)
+
+
