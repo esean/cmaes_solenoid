@@ -1,11 +1,25 @@
-Build:
+# Build:
 
 	$ ./build.sh
 
+# Usage:
+
+	bno055_motor_maximize_linacc_pwm [each candidate test time] [0|1]
+
+	* The program will sample each lamda candidate for [test time] and average
+	  the linear acceleration samples it reads from the accelerometer. This
+	  averaged value is the 'fitness' of each 2D (x[0],x[1]) sample point.
+	  
+	  The x[0],x[1] values are the PWM frequency and duty cycle set to the motor/
+	  solenoid. The program will attempt to find that 2D combination that gives
+	  either a max or minimum linear acceleration.
+	
+# Run:
+
 	#	find minimum:
-	$ ./bno055_motor_maximize_linacc_pwm 200 0.1 70 0
+	$ ./bno055_motor_maximize_linacc_pwm 0.1 0
 
 	#	find maximum:
-	$ ./bno055_motor_maximize_linacc_pwm 200 0.1 70 1
+	$ ./bno055_motor_maximize_linacc_pwm 0.1 1
 
 
