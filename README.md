@@ -23,6 +23,8 @@ NOTE: The BNO055 supports I2C and UART interfaces. I2C would be preferable but t
     times and  measure the response the BNO055. It
     then tries to maximize/minimize the linear acceleration it found by adjusting
     those on/off times
+    
+    Thus the program has a single objective - to minimize/maximize the fitness function.
 
 
 ### The CMA-ES source came from https://github.com/beniz/libcmaes
@@ -62,7 +64,6 @@ bno055_uart_interface-termios
 
 
 
-
 # Prototype
 
 ![alt text](doc/proto1.png)
@@ -70,3 +71,8 @@ bno055_uart_interface-termios
 ![alt text](doc/proto2.png)
 
 
+# Next steps
+
+I would like to add a 2nd optimization objective, so the program could for example maximize the linear acceleration while at the same time minimizing the angular rotation. Or you could maximize the angular rotation while minimizing the linear acceleration.
+
+This is called a multi-objective CMA-ES (MO-CMA-ES) which finds a pareto front of solutions that exist between the 2+ objectives. The same CMA-ES authors [extended their algorithm to include MO support](https://christian-igel.github.io/downloads.html#MOCMA), but it is not available in the above libcmaes codebase. It is however available in the Shark-ML library.
