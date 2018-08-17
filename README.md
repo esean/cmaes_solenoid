@@ -4,7 +4,7 @@ Some projects get started for the simple reason you have the parts around, and a
 
 One night I noticed I had the battery and motor from an old 12V hand-held power drill, and an [IMU BNO055 eval board](https://www.adafruit.com/product/2472). And the thought came to mind how I could control the motor turn-on/off timing to maximize, or minimize, the force that starting and stopping of the motor generates. It seemed for example this might be useful in applications where you want to turn on a motor, but minimize the amount of torque it generates during that startup. And just seemed a good enough waste of time...
 
-[See it in action](https://youtu.be/Y5X0UnOKKN8)
+[Watch a video of it in action](https://www.youtube.com/watch?v=Y5X0UnOKKN8)
 
 
 ## HW:
